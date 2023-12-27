@@ -1,5 +1,8 @@
 $padding: 1rem;
 $border-radius: 0.5rem;
+$box-shadow: inset 0px 1px 36px -21px rgb(74, 76, 101);
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500&display=swap');
 
 * {
 	box-sizing: border-box;
@@ -8,7 +11,7 @@ $border-radius: 0.5rem;
 }
 
 body {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'Chakra Petch', sans-serif;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -23,17 +26,19 @@ body {
 	background-color: #e0e0e0;
 	padding: $padding;
 	border-radius: $border-radius;
-
 	background: linear-gradient(to right, #eaeaea, #dbdbdb, #f2f2f2, #d7d5ca);
-
+	box-shadow: $box-shadow;
 	.display {
 		text-align: right;
+		height: 54px;
 		padding: calc($padding * 0.5);
 		margin-bottom: 15px;
-		border: none;
+		color: tomato;
+		border: 1px solid rgb(186, 183, 183);
 		border-radius: calc($border-radius * 0.5);
 		background-color: #d9f0ff;
-		box-shadow: inset 0px 1px 36px -21px rgb(74, 76, 101);
+		box-shadow: $box-shadow;
+		overflow: hidden;
 	}
 	.buttons {
 		display: grid;
@@ -41,6 +46,7 @@ body {
 		grid-gap: 6px;
 		height: 100%;
 		button {
+			box-shadow: $box-shadow;
 			font-size: 0.7em;
 		}
 	}
