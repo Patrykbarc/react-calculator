@@ -2,10 +2,9 @@ import { useState } from 'react'
 
 function App() {
 	const [display, setDisplay] = useState('')
-	console.log(display)
 
 	function handleSetDisplay(e) {
-		console.log(e)
+		const isNumberOrOperator = /^[0-9.+\-*/=]$/.test(e)
 
 		try {
 			switch (e) {
@@ -13,11 +12,24 @@ function App() {
 					setDisplay('')
 					break
 				case '=':
-					setDisplay(eval(display).toFixed(5))
+					setDisplay(eval(display))
 					break
 
 				default:
-					setDisplay(prevState => prevState + e)
+					if (isNumberOrOperator) {
+						setDisplay(prev => {
+							const updatedDisplay = prev + e
+							const sanitizedDisplay = updatedDisplay
+								.replace(/-+/g, '-')
+								.replace(/\.{2,}/g, '.')
+								.replace(/\*{2,}/g, '*')
+								.replace(/\/{2,}/g, '/')
+								.replace(/\+{2,}/g, '+')
+							return sanitizedDisplay
+						})
+					} else {
+						setDisplay('error')
+					}
 					break
 			}
 		} catch (error) {
@@ -28,8 +40,9 @@ function App() {
 	return (
 		<div className='calculator'>
 			<div className='display'>{display}</div>
+
 			<div className='buttons'>
-				{[7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, 'C', '/'].map(
+				{[7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, '=', '/'].map(
 					value => (
 						<button
 							key={value}
@@ -39,11 +52,12 @@ function App() {
 						</button>
 					)
 				)}
-				<button
+				{/* <button
 					disabled={display.length === 0}
 					onClick={() => handleSetDisplay('=')}>
 					=
-				</button>
+				</button> */}
+				<button onClick={() => handleSetDisplay('C')}>C</button>
 			</div>
 		</div>
 	)
