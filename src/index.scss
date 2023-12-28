@@ -45,9 +45,12 @@ body {
 		grid-template-columns: repeat(4, 1fr);
 		grid-gap: 6px;
 		height: 100%;
-		button {
+		.button {
 			box-shadow: $box-shadow;
 			font-size: 0.7em;
+		}
+		.clear-btn {
+			grid-column: 4/4;
 		}
 	}
 }

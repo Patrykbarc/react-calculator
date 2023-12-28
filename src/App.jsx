@@ -6,45 +6,64 @@ function App() {
 	function handleSetDisplay(e) {
 		const isNumberOrOperator = /^[0-9.+\-*/=]$/.test(e)
 
-		try {
-			switch (e) {
-				case 'C':
-					setDisplay('')
-					break
-				case '=':
-					setDisplay(eval(display))
-					break
+		display === 'error' && setDisplay('')
 
-				default:
-					if (isNumberOrOperator) {
-						setDisplay(prev => {
-							const updatedDisplay = prev + e
-							const sanitizedDisplay = updatedDisplay
-								.replace(/-+/g, '-')
-								.replace(/\.{2,}/g, '.')
-								.replace(/\*{2,}/g, '*')
-								.replace(/\/{2,}/g, '/')
-								.replace(/\+{2,}/g, '+')
-							return sanitizedDisplay
-						})
-					} else {
-						setDisplay('error')
-					}
-					break
+		try {
+			if (e === 'C') {
+				setDisplay('')
+			} else if (e === '=') {
+				evaluateExpression()
+			} else if (isNumberOrOperator) {
+				updateDisplay(e)
+			} else {
+				setDisplay('error')
 			}
 		} catch (error) {
 			setDisplay('error')
 		}
 	}
 
+	function evaluateExpression() {
+		setDisplay(prev => {
+			try {
+				const result = new Function('return ' + prev)()
+				return result.toString()
+			} catch (error) {
+				setDisplay('error')
+				return prev
+			}
+		})
+	}
+
+	function updateDisplay(value) {
+		setDisplay(prev => {
+			const updatedDisplay = prev + value
+			const sanitizedDisplay = updatedDisplay
+				.replace(/-+/g, '-')
+				.replace(/\.{2,}/g, '.')
+				.replace(/\*{2,}/g, '*')
+				.replace(/\/{2,}/g, '/')
+				.replace(/\+{2,}/g, '+')
+
+			const parsedDisplay = parseFloat(sanitizedDisplay)
+
+			if (!isNaN(parsedDisplay)) {
+				return sanitizedDisplay
+			} else {
+				setDisplay('error')
+				return prev
+			}
+		})
+	}
+
 	return (
 		<div className='calculator'>
 			<div className='display'>{display}</div>
-
 			<div className='buttons'>
 				{[7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, '=', '/'].map(
 					value => (
 						<button
+							className='button'
 							key={value}
 							value={value}
 							onClick={() => handleSetDisplay(value)}>
@@ -52,12 +71,11 @@ function App() {
 						</button>
 					)
 				)}
-				{/* <button
-					disabled={display.length === 0}
-					onClick={() => handleSetDisplay('=')}>
-					=
-				</button> */}
-				<button onClick={() => handleSetDisplay('C')}>C</button>
+				<button
+					className='button clear-btn'
+					onClick={() => handleSetDisplay('C')}>
+					C
+				</button>
 			</div>
 		</div>
 	)
