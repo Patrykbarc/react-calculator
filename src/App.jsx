@@ -3,6 +3,9 @@ import { useState } from 'react'
 function App() {
 	const [display, setDisplay] = useState('')
 
+	const buttons = [7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, '=', '/']
+	const mathSymbols = { '*': '×', '/': '÷' }
+
 	function handleSetDisplay(e) {
 		const isNumberOrOperator = /^[0-9.+\-*/=]$/.test(e)
 
@@ -60,17 +63,15 @@ function App() {
 		<div className='calculator'>
 			<div className='display'>{display}</div>
 			<div className='buttons'>
-				{[7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, '=', '/'].map(
-					value => (
-						<button
-							className='button'
-							key={value}
-							value={value}
-							onClick={() => handleSetDisplay(value)}>
-							{value}
-						</button>
-					)
-				)}
+				{buttons.map(value => (
+					<button
+						className='button'
+						key={value}
+						value={value}
+						onClick={() => handleSetDisplay(value)}>
+						{mathSymbols[value] || value}
+					</button>
+				))}
 				<button
 					className='button clear-btn'
 					onClick={() => handleSetDisplay('C')}>
