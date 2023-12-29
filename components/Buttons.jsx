@@ -1,6 +1,11 @@
+import { useState, useEffect } from 'react'
+
 const buttons = [7, 8, 9, '+', 4, 5, 6, '-', 1, 2, 3, '*', '.', 0, '=', '/']
 const mathSymbols = { '*': '×', '/': '÷' }
+
 export function Buttons({ display, setDisplay }) {
+	const [lastResult, setLastResult] = useState(null)
+
 	function handleSetDisplay(e) {
 		const isNumberOrOperator = /^[0-9.+\-*/=]$/.test(e)
 
@@ -10,7 +15,7 @@ export function Buttons({ display, setDisplay }) {
 			if (e === 'C') {
 				setDisplay('')
 			} else if (e === '=') {
-				evaluateExpression()
+				evaluateExpression(display)
 			} else if (isNumberOrOperator) {
 				updateDisplay(e)
 			} else {
@@ -21,16 +26,14 @@ export function Buttons({ display, setDisplay }) {
 		}
 	}
 
-	function evaluateExpression() {
-		setDisplay(prev => {
-			try {
-				const result = new Function('return ' + prev)()
-				return result.toString()
-			} catch (error) {
-				setDisplay('error')
-				return prev
-			}
-		})
+	function evaluateExpression(display) {
+		try {
+			const result = new Function('return ' + display)()
+			setLastResult(result)
+			setDisplay(result.toString())
+		} catch (error) {
+			setDisplay('error')
+		}
 	}
 
 	function updateDisplay(value) {
